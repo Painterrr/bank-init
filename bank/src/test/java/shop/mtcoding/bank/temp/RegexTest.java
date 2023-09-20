@@ -36,7 +36,7 @@ public class RegexTest {
     }
 
     @Test
-    public void 영어와숫자만불가능_test() throws Exception {
+    public void 영어와숫자만가능_test() throws Exception {
         String value = "ssar3425";
         boolean result = Pattern.matches("^[a-zA-Z0-9]+$", value);
         System.out.println("테스트 : " + result);
@@ -49,5 +49,24 @@ public class RegexTest {
         System.out.println("테스트 : " + result);
     }
 
-    
+    @Test
+    public void user_username_test() throws Exception {
+        String username = "sssa";
+        boolean result = Pattern.matches("^[a-zA-Z0-9]{2,20}$", username);
+        System.out.println("테스트 : " + result);
+    }
+
+    @Test
+    public void user_fullname_test() throws Exception {
+        String fullname = "쌀jj";
+        boolean result = Pattern.matches("^[a-zA-Z가-힣]{1,20}$", fullname);
+        System.out.println("테스트 : " + result);
+    }
+
+    @Test
+    public void user_email_test() throws Exception {
+        String email = "ssar@nate.com"; // ac.kr co.kr or.kr은 라이브러리 활용
+        boolean result = Pattern.matches("^[a-zA-Z0-9]{2,10}@[a-zA-Z0-9]{2,6}\\.[a-zA-Z]{2,3}$", email);
+        System.out.println("테스트 : " + result);
+    }
 }
