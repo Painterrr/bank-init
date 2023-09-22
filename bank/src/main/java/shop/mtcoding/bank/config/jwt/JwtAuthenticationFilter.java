@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // post: /login
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) 
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         log.debug("!-디버그 : attemptAuthentication 호출됨-!");
         try {
@@ -50,6 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // JWT를 쓴다 해도, 컨트롤러에 진입하면 시큐리티의 권한 체크, 인증 체크의 도움을 받을 수 있게 세션을 만듦
             // 이 세션의 유요히간은 request하고, response하면 끝.
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
             return authentication;
         } catch (Exception e) {
             // authenticationEntryPoint에 걸림
@@ -59,13 +60,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // return authentication 잘 작동하면 successfulAuthentication 메서드 호출
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
-        log.debug("!-디버그 : successfulAuthentication 호출됨-!");
+        log.debug("!-디버그 : successfulAuthentication 호출됨-! !-세션 생성 후 로그인 완료-!");
         LoginUser loginUser = (LoginUser) authResult.getPrincipal();
         String jwtToken = JwtProcess.create(loginUser);
         response.addHeader(JwtVO.HEADER, jwtToken);
-        
+
         LoginRespDto loginRespDto = new LoginRespDto(loginUser.getUser());
         CustomResponseUtil.success(response, loginRespDto);
     }

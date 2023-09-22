@@ -14,11 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import shop.mtcoding.bank.config.jwt.JwtAuthenticationFilter;
 import shop.mtcoding.bank.domain.user.UserEnum;
-import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.util.CustomResponseUtil;
 
 @Configuration
@@ -27,16 +24,15 @@ public class SecurityConfig {
     
     @Bean // IoC 컨테이너에 BCryptPasswordEncoder 객체 등록. ** @Configuration이 붙어있는 Bean만 등록됨.
     public BCryptPasswordEncoder passwordEncoder() {
-        log.debug("디버그: BCryptPasswordEncoder Bean 등록.");
+        log.debug("디버그 : BCryptPasswordEncoder 빈 등록됨");
         return new BCryptPasswordEncoder();
     }
 
     // JWT 필터 등록 필요
-    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity>{
-
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
-            AuthenticationManager authenticationManager = builder.getSharedObject((AuthenticationManager.class));
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
             super.configure(builder);
         }
@@ -75,7 +71,7 @@ public class SecurityConfig {
     }
 
     public CorsConfigurationSource configurationSource() {
-        log.debug("디버그: configurationSource cors 설정이 SecurotyFilterChain에 등록됨.");
+        log.debug("디버그 : configurationSource cors 설정이 SecurityFilterChain에 등록됨");
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*"); // get, post, put, delete (javascript 요청 허용)
