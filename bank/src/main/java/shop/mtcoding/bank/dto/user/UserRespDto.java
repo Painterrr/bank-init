@@ -20,8 +20,6 @@ public class UserRespDto {
             this.username = user.getUsername();
             this.createdAt = CustomDateUtil.toStringFormat(user.getCreatedAt());
         }
-
-        
     }
 
     @ToString

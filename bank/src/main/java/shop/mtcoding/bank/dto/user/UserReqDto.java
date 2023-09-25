@@ -25,7 +25,7 @@ public class UserReqDto {
     // validation check
     public static class JoinReqDto {
         // 영문, 숫자만 가능. 길이 2~20자
-        @Pattern(regexp = "^[a-zA-Z0-9]{2,20}$", message = "영문/숫자 2~20자 이내로 작성하세요.")
+        @Pattern(regexp = "^[a-zA-Z0-9]{2,20}$", message = "영문/숫자 2~20자 이내로 작성해주세요")
         @NotEmpty // null or emptyspace
         private String username;
 
@@ -35,23 +35,23 @@ public class UserReqDto {
         private String password;
 
         // 이메일 형식
-        @Pattern(regexp = "^[a-zA-Z0-9]{2,10}@[a-zA-Z0-9]{2,6}\\.[a-zA-Z]{2,3}$", message = "이메일 형식을 작성하세요.")
         @NotEmpty
+        @Pattern(regexp = "^[a-zA-Z0-9]{2,10}@[a-zA-Z0-9]{2,6}\\.[a-zA-Z]{2,3}$", message = "이메일 형식으로 작성해주세요")
         private String email;
 
         // 영어, 한글 가능, 길이 1~20자
-        @Pattern(regexp = "^[a-zA-Z가-힣]{1,20}$", message = "한글/영문 1~20자 이내로 작성하세요.")
         @NotEmpty
+        @Pattern(regexp = "^[a-zA-Z가-힣]{1,20}$", message = "한글/영문 1~20자 이내로 작성해주세요")
         private String fullname;
 
         public User toEntity(BCryptPasswordEncoder passwordEncoder) {
             return User.builder()
-            .username(username)
-            .password(passwordEncoder.encode(password))
-            .email(email)
-            .fullname(fullname)
-            .role(UserEnum.CUSTOMER)
-            .build();
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .fullname(fullname)
+                .role(UserEnum.CUSTOMER)
+                .build();
         }
     }
 }

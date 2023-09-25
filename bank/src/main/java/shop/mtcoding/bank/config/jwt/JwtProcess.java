@@ -24,7 +24,7 @@ public class JwtProcess {
             .withClaim("id", loginUser.getUser().getId())
             .withClaim("role", loginUser.getUser().getRole() + "")
             .sign(Algorithm.HMAC512(JwtVO.SECRET));
-        return JwtVO.TOKEN_PREFIX+jwtToken;
+        return JwtVO.TOKEN_PREFIX + jwtToken;
     }
 
     // 토큰 검증 (return 된 lLoginUser 객체를 강제로 시큐리티 세션에 직접 주입할 예정: 강제 로그인)

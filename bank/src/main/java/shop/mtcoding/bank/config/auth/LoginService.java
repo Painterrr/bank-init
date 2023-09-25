@@ -16,7 +16,7 @@ public class LoginService implements UserDetailsService{
     @Autowired
     private UserRepository userRepository;
 
-    // 시큐리티로 로그안 될 떄, 시큐리티가 loadUserByUsername() 실행해서 username 체크
+    // 시큐리티로 로그인 될 떄, 시큐리티가 loadUserByUsername() 실행해서 username 체크
     // 없으면 오류
     // 있으면 정상적으로 시큐리티 컨텍스트 내부 세션에 로그인된 세션이 생성됨.
     @Override

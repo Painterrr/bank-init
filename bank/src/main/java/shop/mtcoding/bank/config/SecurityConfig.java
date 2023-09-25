@@ -28,7 +28,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // JWT 필터 등록 필요
+    // JWT 필터
     public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
