@@ -70,6 +70,7 @@ public class SecurityConfig {
             CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN); // 403
         });
 
+        // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
         http.authorizeHttpRequests()
             .antMatchers("/api/s/**").authenticated()
             .antMatchers("/api/admin/**").hasRole("" + UserEnum.ADMIN)
