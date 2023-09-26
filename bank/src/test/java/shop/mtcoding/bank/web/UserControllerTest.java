@@ -3,6 +3,8 @@ package shop.mtcoding.bank.web;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import shop.mtcoding.bank.config.dummy.DummyObject;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.user.UserReqDto.JoinReqDto;
 
+@Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 public class UserControllerTest extends DummyObject{
@@ -32,7 +35,7 @@ public class UserControllerTest extends DummyObject{
 
     @BeforeEach
     public void setUp() {
-        dataSetting();
+        userRepository.save(newUser("ssar", "쌀"));
     }
 
     @Test
@@ -77,9 +80,5 @@ public class UserControllerTest extends DummyObject{
 
         // then
         resultActions.andExpect(status().isBadRequest());
-    }
-
-    private void dataSetting() {
-        userRepository.save(newUser("ssar", "쌀"));
     }
 }

@@ -67,7 +67,7 @@ public class SecurityConfig {
 
         // 권한 실패
         http.exceptionHandling().accessDeniedHandler((request, response, e) -> {
-            CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
+            CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN); // 403
         });
 
         http.authorizeHttpRequests()
