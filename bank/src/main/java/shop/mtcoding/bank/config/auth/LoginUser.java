@@ -13,7 +13,7 @@ import shop.mtcoding.bank.domain.user.User;
 @Getter
 @RequiredArgsConstructor
 public class LoginUser implements UserDetails {
-    
+
     private final User user;
 
     @Override
@@ -35,7 +35,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -52,4 +52,5 @@ public class LoginUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
