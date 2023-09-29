@@ -58,8 +58,9 @@ public class AccountServiceTest extends DummyObject {
         Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
         when(accountRepository.save(any())).thenReturn(ssarAccount);
 
-        // when
+        // when 
         AccountSaveRespDto accountSaveRespDto = accountService.계좌등록(accountSaveReqDto, userId);
+        // 계좌등록(accountSaveReqDto, userId);
         String responseBody = om.writeValueAsString(accountSaveRespDto);
         System.out.println("테스트 : " + responseBody);
     
