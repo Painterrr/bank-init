@@ -27,11 +27,11 @@ public class AccountRespDto {
     @Getter
     @Setter
     public static class AccountListRespDto {
-        private String fullanme;
+        private String fullname;
         private List<AccountDto> accounts = new ArrayList<>();
         
         public AccountListRespDto(User user, List<Account> accounts) {
-            this.fullanme = user.getFullname();
+            this.fullname = user.getFullname();
             // this.accounts = accounts.stream().map((account) -> new AccountDto(account)).collect(Collectors.toList());
             this.accounts = accounts.stream().map(AccountDto::new).collect(Collectors.toList());
             // [account, account]

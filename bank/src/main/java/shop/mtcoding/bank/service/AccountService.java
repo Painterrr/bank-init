@@ -26,7 +26,7 @@ public class AccountService {
 
     public AccountListRespDto 계좌목록보기_유저별(Long userId) {
         User userPS = userRepository.findById(userId).orElseThrow(
-            () -> new CustomApiException("user를 찾을 수 없습니다."));
+                () -> new CustomApiException("user를 찾을 수 없습니다."));
 
         // 해당 유저의 모든 계좌 목록
         List<Account> accountListPS = accountRepository.findByUser_id(userId);
@@ -37,7 +37,7 @@ public class AccountService {
     public AccountSaveRespDto 계좌등록(AccountSaveReqDto accountSaveReqDto, Long userId) {
         // userId로 User가 DB에 등록된 상태인지 검증
         User userPS = userRepository.findById(userId).orElseThrow(
-            () -> new CustomApiException("user를 찾을 수 없습니다."));
+            () -> new CustomApiException("user를 찾을 수 없습니다. 회원가입을 먼저 진행하세요."));
 
         // 해당 계좌(userId와 일치하는)가 DB에 있는지 중복여부 체크
         Optional<Account> accountOP = accountRepository.findByNumber(accountSaveReqDto.getNumber());
@@ -54,9 +54,9 @@ public class AccountService {
 
     @Transactional
     public void 계좌삭제(Long number, Long userId) {
-        // 계좌 확인
+        // 계좌 유무 확인
         Account accountPS = accountRepository.findByNumber(number).orElseThrow(
-            () -> new CustomApiException("계좌를 찾을 수 없습니다."));
+            () -> new CustomApiException("계좌를 찾을 수 없습니다"));
 
         // 계좌 소유주 확인
         accountPS.checkOwner(userId);

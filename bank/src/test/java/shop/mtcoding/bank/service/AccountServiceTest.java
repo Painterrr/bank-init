@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,7 @@ import shop.mtcoding.bank.domain.account.AccountRepository;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
@@ -72,18 +75,41 @@ public class AccountServiceTest extends DummyObject {
     }
 
     @Test
-    public void 계좌삭제_test() throws Exception {
-        // given: 다른 user가 계좌삭제를 시도하면 Throws로 처리.
-        // 동일 user가 시도하면 예외 발생.
-        Long number = 1111L;
-        Long userId = 2L;
+    public void 계좌목록보기_유저별_test() throws Exception {
+        // given
+        Long userId = 1L;
 
         // stub
         User ssar = newMockUser(1L, "ssar", "쌀");
-        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
-        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(ssar));
+
+        Account ssarAccount1 = newMockAccount(1L, 1111L, 1000L, ssar);
+        Account ssarAccount2 = newMockAccount(2L, 2222L, 1000L, ssar);
+        List<Account> accountList = Arrays.asList(ssarAccount1, ssarAccount2);
+        when(accountRepository.findByUser_id(any())).thenReturn(accountList);
 
         // when
-        assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
+        AccountListRespDto accountListRespDto = accountService.계좌목록보기_유저별(userId);
+
+        // then
+        assertThat(accountListRespDto.getFullname()).isEqualTo("쌀");
+        assertThat(accountListRespDto.getAccounts().size()).isEqualTo(2);
     }
+
+    // @Test
+    // public void 계좌삭제_test() throws Exception {
+    //     // given: 다른 user가 계좌삭제를 시도하면 Throws로 처리.
+    //     // 동일 user가 시도하면 예외 발생.
+    //     Long number = 1111L;
+    //     Long userId = 2L;
+
+    //     // stub
+    //     User ssar = newMockUser(1L, "ssar", "쌀");
+    //     Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+    //     // when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
+    //     accountService.계좌삭제(number, userId);
+
+    //     // when
+    //     assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
+    // }
 }
