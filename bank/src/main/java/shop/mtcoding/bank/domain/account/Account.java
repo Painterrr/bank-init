@@ -21,6 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.mtcoding.bank.domain.user.User;
+import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 @NoArgsConstructor // 스프링이 User 객체 생성할 때 반 생성자로 new 하기 때문
 @Getter
@@ -59,5 +60,11 @@ public class Account {
         this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public void checkOwner(Long userId) {
+        if(user.getId() != userId) {
+            throw new CustomApiException("계좌 소유자가 아닙니다.");
+        }
     }
 }

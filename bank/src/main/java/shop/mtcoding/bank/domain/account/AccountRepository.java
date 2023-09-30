@@ -14,4 +14,6 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
     // jpa query method.
     // select * from account where user_id = :id
     List<Account> findByUser_id(Long id);
+
+    
 }
