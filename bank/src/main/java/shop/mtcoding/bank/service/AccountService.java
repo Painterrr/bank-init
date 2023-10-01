@@ -58,7 +58,7 @@ public class AccountService {
         Account accountPS = accountRepository.findByNumber(number).orElseThrow(
             () -> new CustomApiException("계좌를 찾을 수 없습니다"));
 
-        // 계좌 소유주 확인
+        // 계좌 소유자 일치 확인
         accountPS.checkOwner(userId);
 
         // 계좌 삭제

@@ -96,20 +96,21 @@ public class AccountServiceTest extends DummyObject {
         assertThat(accountListRespDto.getAccounts().size()).isEqualTo(2);
     }
 
-    // @Test
-    // public void 계좌삭제_test() throws Exception {
-    //     // given: 다른 user가 계좌삭제를 시도하면 Throws로 처리.
-    //     // 동일 user가 시도하면 예외 발생.
-    //     Long number = 1111L;
-    //     Long userId = 2L;
+    // 계좌 유무, 계좌 삭제의 역할은 레파지토리의 영역.
+    // 서비스 단에서의 계좌삭제 테스트는 로그인 유저와 소유자 일치 확인만.
+    @Test
+    public void 계좌삭제_test() throws Exception {
+        // given: 다른 user가 계좌삭제를 시도하면 Throws로 처리.
+        // 동일 user가 시도하면 예외 발생.
+        Long number = 1111L;
+        Long userId = 2L;
 
-    //     // stub
-    //     User ssar = newMockUser(1L, "ssar", "쌀");
-    //     Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
-    //     // when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
-    //     accountService.계좌삭제(number, userId);
+        // stub
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
 
-    //     // when
-    //     assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
-    // }
+        // when
+        assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
+    }
 }
