@@ -22,7 +22,6 @@ import shop.mtcoding.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.service.AccountService;
 
-
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
