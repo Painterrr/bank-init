@@ -92,8 +92,9 @@ public class AccountServiceTest extends DummyObject {
         AccountListRespDto accountListRespDto = accountService.계좌목록보기_유저별(userId);
 
         // then
-        assertThat(accountListRespDto.getFullname()).isEqualTo("쌀");
-        assertThat(accountListRespDto.getAccounts().size()).isEqualTo(2);
+        assertThat(accountListRespDto.getFullname()).isEqualTo("쌀"); // 소유자가 user와 동일한 이름인지
+        assertThat(accountListRespDto.getAccounts().size()).isEqualTo(2); // stub에 설정한 2개의 계좌와 사이즈가 같은지
+        System.out.println("테스트 : 보유 계좌 수: " + accountListRespDto.getAccounts().size());
     }
 
     // 계좌 유무 확인, 계좌 삭제의 역할은 레파지토리의 영역.

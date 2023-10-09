@@ -42,7 +42,7 @@ public class AccountService {
         // 해당 계좌(userId와 일치하는)가 DB에 있는지 중복여부 체크
         Optional<Account> accountOP = accountRepository.findByNumber(accountSaveReqDto.getNumber());
         if(accountOP.isPresent()) {
-            throw new CustomApiException("해당 계좌가 이미 존재합니다.");
+            throw new CustomApiException("해당 계좌번호가 이미 존재합니다.");
         }
 
         // 계좌 등록
@@ -55,16 +55,17 @@ public class AccountService {
     @Transactional
     public void 계좌삭제(Long number, Long userId) {
         // 계좌 유무 확인
-        System.out.println("테스트 : target: " + number);
-        if(accountRepository.findByNumber(number).isPresent()) {
-            System.out.println("테스트 : 계좌 존재.");
-        } else {
-            System.out.println("테스트 : DB 내 계좌 확인 불가.");
-        }
+        System.out.println("테스트 : number: " + number);
+        System.out.println("테스트 : userId: " + userId);
 
         Account accountPS = accountRepository.findByNumber(number).orElseThrow(
-                () -> new CustomApiException("계좌를 찾을 수 없습니다."));
+                () -> new CustomApiException("계좌를 찾을 수 없습니다"));
 
+        System.out.println("테스트 : 이하 계좌 정보");
+        System.out.println("테스트 : id: " + accountPS.getId());
+        System.out.println("테스트 : number: " + accountPS.getNumber());
+        System.out.println("테스트 : user: " + accountPS.getUser());
+        
         // 계좌 소유자 일치 확인
         accountPS.checkOwner(userId);
 

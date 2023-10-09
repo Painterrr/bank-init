@@ -35,9 +35,9 @@ public class AccountController {
         return new ResponseEntity<>(new ResponseDto<>(1, "계좌등록 성공.", accountSaveRespDto), HttpStatus.CREATED);
     }
 
-    // 인증이 필요하고, account 테이블에서 {id}번 row를 주세요.(권한 처리 필요)
-    // -> 인증이 필요하고, account 테이블 데이터를 다 주세요.
-    // -> 인증이 필요하고, account 테이블에 login한 유저의 계좌만 주세요.
+    // /s/acocunt/{id} -> 인증이 필요하고, account 테이블에서 {id}번 row를 주세요.(권한 처리 필요)
+    // /s/account -> 인증이 필요하고, account 테이블 데이터를 다 주세요.(권한 처리 필요)
+    // /s/account/login-user -> 인증이 필요하고, account 테이블에 login한 유저의 계좌만 주세요.
     @GetMapping("/s/account/login-user")
     public ResponseEntity<?> findUserAccount(@AuthenticationPrincipal LoginUser loginUser) {
         AccountListRespDto accountListRespDto = accountService.계좌목록보기_유저별(loginUser.getUser().getId());
@@ -47,6 +47,6 @@ public class AccountController {
     @DeleteMapping("/s/account/{number}")
     public ResponseEntity<?> deleteAccount(@PathVariable Long number, @AuthenticationPrincipal LoginUser loginUser) {
         accountService.계좌삭제(number, loginUser.getUser().getId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료", null), HttpStatus.OK);
     }
 }
