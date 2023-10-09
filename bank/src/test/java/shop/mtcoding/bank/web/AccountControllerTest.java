@@ -97,11 +97,11 @@ public class AccountControllerTest extends DummyObject {
     @Test
     public void deleteAccount_test() throws Exception {
         // given
-        Long number = 1112L;
+        Long number = 1111L;
 
         // when
         ResultActions resultActions = mvc
-                .perform(delete("/api/s/account/" + number));
+                        .perform(delete("/api/s/account/" + number));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 

@@ -55,8 +55,15 @@ public class AccountService {
     @Transactional
     public void 계좌삭제(Long number, Long userId) {
         // 계좌 유무 확인
+        System.out.println("테스트 : target: " + number);
+        if(accountRepository.findByNumber(number).isPresent()) {
+            System.out.println("테스트 : 계좌 존재.");
+        } else {
+            System.out.println("테스트 : DB 내 계좌 확인 불가.");
+        }
+
         Account accountPS = accountRepository.findByNumber(number).orElseThrow(
-            () -> new CustomApiException("계좌를 찾을 수 없습니다"));
+                () -> new CustomApiException("계좌를 찾을 수 없습니다."));
 
         // 계좌 소유자 일치 확인
         accountPS.checkOwner(userId);

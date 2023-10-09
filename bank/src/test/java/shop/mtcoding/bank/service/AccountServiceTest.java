@@ -96,7 +96,7 @@ public class AccountServiceTest extends DummyObject {
         assertThat(accountListRespDto.getAccounts().size()).isEqualTo(2);
     }
 
-    // 계좌 유무, 계좌 삭제의 역할은 레파지토리의 영역.
+    // 계좌 유무 확인, 계좌 삭제의 역할은 레파지토리의 영역.
     // 서비스 단에서의 계좌삭제 테스트는 로그인 유저와 소유자 일치 확인만.
     @Test
     public void 계좌삭제_test() throws Exception {

@@ -26,7 +26,9 @@ import shop.mtcoding.bank.handler.ex.CustomApiException;
 @NoArgsConstructor // 스프링이 User 객체 생성할 때 반 생성자로 new 하기 때문
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "account_tb")
+@Table(name = "account_tb", indexes = {
+    @Index(name = "idx_account_number", columnList = "number")
+})
 @Entity
 public class Account {
     @Id
@@ -66,5 +68,6 @@ public class Account {
         if(user.getId() != userId) {
             throw new CustomApiException("계좌 소유자가 아닙니다.");
         }
+        System.out.println("테스트 : 소유자 번호 일치.");
     }
 }

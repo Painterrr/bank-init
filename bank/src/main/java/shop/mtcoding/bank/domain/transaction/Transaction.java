@@ -42,8 +42,8 @@ public class Transaction {
     @Column(nullable = false)
     private Long amount;
 
-    private Long withdrawAccountBalance;
-    private Long depositAccountBalance;
+    private Long withdrawAccountBalance; // 출금 시 잔액 기록
+    private Long depositAccountBalance; // 입금 시 잔액 기록
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
