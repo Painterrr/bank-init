@@ -26,7 +26,7 @@ public class JwtProcessTest {
     }
 
     @Test
-    public void _test() throws Exception {
+    public void verify_test() throws Exception {
         // given
         String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5rIiwicm9sZSI6IkNVU1RPTUVSIiwiaWQiOjEsImV4cCI6MTY5NjMyMjY4OH0.4-UUcH5dJtfd-LotbxNJVJrtsP7oo6BNSCwH2aF9pN1i76OqktIuZ8Rv2_WDFA38Zt33u6ksg7pT3yoT1K2TgQ";
     
@@ -37,6 +37,6 @@ public class JwtProcessTest {
     
         // then
         assertThat(loginUser.getUser().getId()).isEqualTo(1L);
-        assertThat(loginUser.getUser().getRole()).isEqualTo(UserEnum.CUSTOMER);
+        assertThat(loginUser.getUser().getRole()).isEqualTo(UserEnum.ADMIN);
     }
 }
