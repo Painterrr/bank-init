@@ -19,6 +19,9 @@ public class DummyDevInit extends DummyObject {
         return (args) -> {
             // 서버 실행 시 무조건 실행
             User ssar = userRepository.save(newUser("ssar", "쌀"));
+            User cos = userRepository.save(newUser("cos", "코스"));
+            Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
+            Account cosAccount1 = accountRepository.save(newAccount(2222L, cos));
         };
     }
 }
