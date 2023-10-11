@@ -158,4 +158,66 @@ public class AccountServiceTest extends DummyObject {
         assertThat(ssarAccount1.getBalance()).isEqualTo(1100L);
         assertThat(accountDepositRespDto.getTransaction().getDepositAccountBalance()).isEqualTo(1100L);
     }
+
+    @Test
+    public void 계좌입금_test2() throws Exception {
+        // given
+        AccountDepositReqDto accountDepositReqDto = new AccountDepositReqDto();
+        accountDepositReqDto.setNumber(1111L);
+        accountDepositReqDto.setAmount(100L);
+        accountDepositReqDto.setGubun("DEPOSIT");
+        accountDepositReqDto.setTel("01088887777");
+
+        // stub 1L
+        User ssar = newMockUser(1L, "ssar", "쌀"); // 실행됨
+        Account ssarAccount1 = newMockAccount(1L, 1111L, 1000L, ssar); // 실행됨 - ssarAccount1 -> 1000원
+        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount1));
+
+        // stub 2
+        User ssar2 = newMockUser(1L, "ssar", "쌀"); // 실행됨
+        Account ssarAccount2 = newMockAccount(1L, 1111L, 1000L, ssar2); // 실행됨 - ssarAccount1 -> 1000원
+        Transaction transaction = newMockDepositTransaction(1L, ssarAccount2);
+        when(transactionRepository.save(any())).thenReturn(transaction); // 실행안됨
+
+        // when
+        AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
+        String responseBody = om.writeValueAsString(accountDepositRespDto);
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        assertThat(ssarAccount1.getBalance()).isEqualTo(1100L);
+    }
+
+    // 서비스 테스트를 강의한 것은 기술적인 테크닉뿐
+    // 진짜 서비스를 테스트하고 싶으면, 내가 지금 무엇을 여기서 테스트할지 명확히 구분해야 함.(책임 분리)
+    // DTO를 만드는 책임 -> 서비스에 있지만 서비스에서 DTO를 검증하지 않고 controller 테스트할 것.
+    // DB 관련된 것도 -> 서비스 책임이 아님.
+    // (DB 관련된 것을 조회했을 때, 그 값을 통해서 어떤 비즈니스 로직이 흘러가는 것이 있으면 stub으로 정의해서 테스트 해야 함.)
+    // 하지만 지금처럼 DB stub을 만들면서 deposit, 0원 검증 등의 테스트를 할 필요가 있을까 고민해야 함.
+    @Test
+    public void 계좌입금_test3() throws Exception {
+        // given
+        Account account = newMockAccount(1L, 1111L, 1000L, null);
+        Long amount = 100L;
+    
+        // when
+        if (amount <= 0) {
+            throw new CustomApiException("0원 이하의 금액은 입금할 수 없습니다.");
+        }
+        account.deposit(100L);
+    
+        // then
+        assertThat(account.getBalance()).isEqualTo(1100L);
+    }
+
+    // 계좌 출금_테스트
+
+
+    // 계좌 이체_테스트
+
+
+    // 계좌목록보기_유저별_테스트
+
+
+    // 계좌상세보기_테스트
 }
