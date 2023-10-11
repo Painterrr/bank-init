@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 import shop.mtcoding.bank.domain.account.Account;
+import shop.mtcoding.bank.domain.transaction.Transaction;
 import shop.mtcoding.bank.domain.user.User;
+import shop.mtcoding.bank.util.CustomDateUtil;
 
 public class AccountRespDto {
     @Getter
@@ -48,6 +52,46 @@ public class AccountRespDto {
                 this.id = account.getId();
                 this.number = account.getNumber();
                 this.balance = account.getBalance();
+            }
+        }
+    }
+
+    @Setter
+    @Getter
+    public static class AccountDepositRespDto {
+        private Long id; // 계좌 ID
+        private Long number; // 계좌번호
+        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에 걸리면 순환 참조 걸림)
+        private TransactionDto transaction;
+
+        public AccountDepositRespDto(Account account, Transaction transaction) {
+            this.id = account.getId();
+            this.number = account.getNumber();
+            this.transaction = new TransactionDto(transaction);
+        }
+
+        @Setter
+        @Getter
+        public class TransactionDto {
+            private Long id;
+            private String gubun;
+            private String sender;
+            private String reciever;
+            private Long amount;
+            private String tel;
+            private String createdAt;
+            @JsonIgnore
+            private Long depositAccountBalance; // 클라이언트에게 전달 X, 서비스단에서의 테스트용
+
+            public TransactionDto(Transaction transaction) {
+                this.id = transaction.getId();
+                this.gubun = transaction.getGubun().getValue();
+                this.sender = transaction.getSender();
+                this.reciever = transaction.getReceiver();
+                this.amount = transaction.getAmount();
+                this.tel = transaction.getTel();
+                this.createdAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
+                this.depositAccountBalance = transaction.getDepositAccountBalance();
             }
         }
     }
