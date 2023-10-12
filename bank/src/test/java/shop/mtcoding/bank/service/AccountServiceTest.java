@@ -27,11 +27,11 @@ import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
-import shop.mtcoding.bank.service.AccountService.AccountWithdrawReqDto;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest extends DummyObject {
@@ -236,6 +236,49 @@ public class AccountServiceTest extends DummyObject {
     }
 
     // 계좌 이체_테스트
+    @Test
+    public void 계좌이체_test() throws Exception {
+        // given
+        Long userId = 1L;
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
+
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        User cos = newMockUser(2L, "cos", "코스");
+
+        Account withdrawAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+        Account depositAccount = newMockAccount(2L, 2222L, 1000L, cos);
+    
+        // when
+        if(accountTransferReqDto.getWithdrawNumber().longValue() == accountTransferReqDto.getDepositNumber().longValue()) {
+            throw new CustomApiException("입출금계좌가 동일할 수 없습니다.");
+        }
+
+        if(accountTransferReqDto.getAmount() <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
+        }
+    
+        // 출금 소유자 확인(로그인 유저와 출금 계좌 소유자 동일인 확인)
+        withdrawAccount.checkOwner(userId);
+
+        // 출금 계좌 비밀번호 확인
+        withdrawAccount.checkSamePassword(accountTransferReqDto.getWithdrawPassword());
+
+        // 출금 계좌 잔액 확인(계좌 잔액 >= 출금 금액)
+        withdrawAccount.checkBalance(accountTransferReqDto.getAmount());
+
+        // 이체 확인
+        withdrawAccount.withdraw(accountTransferReqDto.getAmount());
+        depositAccount.deposit(accountTransferReqDto.getAmount());
+        
+        // then
+        assertThat(withdrawAccount.getBalance()).isEqualTo(900L);
+        assertThat(depositAccount.getBalance()).isEqualTo(1100L);
+    }
 
     // 계좌목록보기_유저별_테스트
 

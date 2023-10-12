@@ -19,12 +19,12 @@ import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountWithdrawRespDto;
 import shop.mtcoding.bank.service.AccountService;
-import shop.mtcoding.bank.service.AccountService.AccountWithdrawReqDto;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
