@@ -95,4 +95,43 @@ public class AccountRespDto {
             }
         }
     }
+
+    // DTO가 같더라도 재사용하지 않고 서비스 기능에 따라 독립적으로 구현.
+    // (출금, 예금의 각 서비스 과정이 조금씩 변경되면 결국 dto도 변경되어야 함)
+    @Setter
+    @Getter
+    public static class AccountWithdrawRespDto {
+        private Long id; // 계좌 ID
+        private Long number; // 계좌번호
+        private Long balance; // 잔액
+        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에 걸리면 순환 참조 걸림)
+        private TransactionDto transaction;
+
+        public AccountWithdrawRespDto(Account account, Transaction transaction) {
+            this.id = account.getId();
+            this.number = account.getNumber();
+            this.balance = account.getBalance();
+            this.transaction = new TransactionDto(transaction);
+        }
+
+        @Setter
+        @Getter
+        public class TransactionDto {
+            private Long id;
+            private String gubun;
+            private String sender;
+            private String reciever;
+            private Long amount;
+            private String createdAt;
+
+            public TransactionDto(Transaction transaction) {
+                this.id = transaction.getId();
+                this.gubun = transaction.getGubun().getValue();
+                this.sender = transaction.getSender();
+                this.reciever = transaction.getReceiver();
+                this.amount = transaction.getAmount();
+                this.createdAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
+            }
+        }
+    }
 }

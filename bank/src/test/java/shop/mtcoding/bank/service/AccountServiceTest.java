@@ -2,7 +2,6 @@ package shop.mtcoding.bank.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +31,7 @@ import shop.mtcoding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
+import shop.mtcoding.bank.service.AccountService.AccountWithdrawReqDto;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest extends DummyObject {
@@ -136,7 +136,7 @@ public class AccountServiceTest extends DummyObject {
         // stub1
         User ssar = newMockUser(1L, "ssar", "쌀"); // 실행됨
         // 실행됨 (ssarAccount1 현 잔액 1000원)
-        Account ssarAccount1 = newMockAccount(1L, 1111L, 1000L, ssar); 
+        Account ssarAccount1 = newMockAccount(1L, 1111L, 1000L, ssar);
         // service 호출 후 입금계좌 확인이 호출되면 입금메서드가 호출되면서 실행됨(이 경우 ssarAccount1 현 잔액 1100)
         // 다음 단계가 transaction에 account를 저장하는 것이니 잔액은 1200원
         when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount1)); // 실행 안됨
@@ -144,10 +144,10 @@ public class AccountServiceTest extends DummyObject {
         // stub2
         // 실행됨 (ssarAccount1 현 잔액 1100원 / transation 현 잔액 1100원)
         // 해서 stub이 진행될 때마다 연관된 객체는 다시 사용하지 않고 새로 만들어서 사용(서로 영향을 줄 수 있기 때문)
-        Account ssarAccount2 = newMockAccount(1L, 1111L, 1000L, ssar); 
-        Transaction transaction = newMockDepositTransaction(1L, ssarAccount2); 
+        Account ssarAccount2 = newMockAccount(1L, 1111L, 1000L, ssar);
+        Transaction transaction = newMockDepositTransaction(1L, ssarAccount2);
         when(transactionRepository.save(any())).thenReturn(transaction); // 실행 안됨
-    
+
         // when
         AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
         System.out.println("테스트 : 트랜젝션 입금계좌 잔액: " + accountDepositRespDto.getTransaction().getDepositAccountBalance());
@@ -199,25 +199,45 @@ public class AccountServiceTest extends DummyObject {
         // given
         Account account = newMockAccount(1L, 1111L, 1000L, null);
         Long amount = 100L;
-    
+
         // when
         if (amount <= 0) {
             throw new CustomApiException("0원 이하의 금액은 입금할 수 없습니다.");
         }
         account.deposit(100L);
-    
+
         // then
         assertThat(account.getBalance()).isEqualTo(1100L);
     }
 
     // 계좌 출금_테스트
+    @Test
+    public void 계좌출금_test() throws Exception {
+        // given
+        Long amount = 100L;
+        Long password = 1234L;
+        Long userId = 1L;
 
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+
+        // when
+        if (amount <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
+        }
+
+        ssarAccount.checkOwner(userId);
+        ssarAccount.checkSamePassword(password);
+        ssarAccount.checkBalance(amount);
+        ssarAccount.withdraw(amount);
+
+        // then
+        assertThat(ssarAccount.getBalance()).isEqualTo(900L);
+    }
 
     // 계좌 이체_테스트
 
-
     // 계좌목록보기_유저별_테스트
-
 
     // 계좌상세보기_테스트
 }
