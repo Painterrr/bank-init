@@ -33,21 +33,22 @@ public class AccountRespDto {
     public static class AccountListRespDto {
         private String fullname;
         private List<AccountDto> accounts = new ArrayList<>();
-        
+
         public AccountListRespDto(User user, List<Account> accounts) {
             this.fullname = user.getFullname();
-            // this.accounts = accounts.stream().map((account) -> new AccountDto(account)).collect(Collectors.toList());
+            // this.accounts = accounts.stream().map((account) -> new
+            // AccountDto(account)).collect(Collectors.toList());
             this.accounts = accounts.stream().map(AccountDto::new).collect(Collectors.toList());
             // [account, account]
         }
-        
+
         @Getter
         @Setter
         public class AccountDto {
             private Long id;
             private Long number;
             private Long balance;
-            
+
             public AccountDto(Account account) {
                 this.id = account.getId();
                 this.number = account.getNumber();
@@ -61,7 +62,8 @@ public class AccountRespDto {
     public static class AccountDepositRespDto {
         private Long id; // 계좌 ID
         private Long number; // 계좌번호
-        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에 걸리면 순환 참조 걸림)
+        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에
+        // 걸리면 순환 참조 걸림)
         private TransactionDto transaction;
 
         public AccountDepositRespDto(Account account, Transaction transaction) {
@@ -104,7 +106,8 @@ public class AccountRespDto {
         private Long id; // 계좌 ID
         private Long number; // 계좌번호
         private Long balance; // 잔액
-        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에 걸리면 순환 참조 걸림)
+        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에
+        // 걸리면 순환 참조 걸림)
         private TransactionDto transaction;
 
         public AccountWithdrawRespDto(Account account, Transaction transaction) {
@@ -141,7 +144,8 @@ public class AccountRespDto {
         private Long id; // 계좌 ID
         private Long number; // 계좌번호
         private Long balance; // 출금계좌 잔액
-        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에 걸리면 순환 참조 걸림)
+        // transaction log. transaction으로 하면 절대 안됨.(controller에 Entity 노출됨 -> 양방향 매핑에
+        // 걸리면 순환 참조 걸림)
         private TransactionDto transaction;
 
         public AccountTransferRespDto(Account account, Transaction transaction) {
@@ -171,6 +175,61 @@ public class AccountRespDto {
                 this.amount = transaction.getAmount();
                 this.depositAccountBalance = transaction.getDepositAccountBalance();
                 this.createdAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
+            }
+        }
+    }
+
+    @Setter
+    @Getter
+    public static class AccountDetailRespDto {
+        private Long id; // 계좌 id
+        private Long number; // 계좌번호
+        private Long balance; // 현 계좌의 최종 잔액
+        private List<TransactionDto> transactions = new ArrayList<>();
+
+        public AccountDetailRespDto(Account account, List<Transaction> transactions) {
+            this.id = account.getId();
+            this.number = account.getNumber();
+            this.balance = account.getBalance();
+            this.transactions = transactions.stream()
+                    .map((transaction) -> new TransactionDto(transaction, account.getNumber()))
+                    .collect(Collectors.toList());
+        }
+
+        @Setter
+        @Getter
+        public class TransactionDto {
+            private Long id;
+            private String gubun;
+            private Long amount;
+
+            private String sender;
+            private String receiver;
+
+            private String tel;
+            private String created;
+            private Long balance;
+
+            public TransactionDto(Transaction transaction, Long accountNumber) {
+                this.id = transaction.getId();
+                this.gubun = transaction.getGubun().getValue();
+                this.amount = transaction.getAmount();
+                this.sender = transaction.getSender();
+                this.receiver = transaction.getReceiver();
+                this.created = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
+                this.tel = transaction.getTel() == null ? "없음" : transaction.getTel();
+
+                if (transaction.getDepositAccount() == null) {
+                    this.balance = transaction.getWithdrawAccountBalance();
+                } else if (transaction.getWithdrawAccount() == null) {
+                    this.balance = transaction.getDepositAccountBalance();
+                } else {
+                    if (accountNumber.longValue() == transaction.getDepositAccount().getNumber().longValue()) {
+                        this.balance = transaction.getDepositAccountBalance();
+                    } else {
+                        this.balance = transaction.getWithdrawAccountBalance();
+                    }
+                }
             }
         }
     }
