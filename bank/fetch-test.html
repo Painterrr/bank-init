@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>로그인 페이지</h1>
+    <hr>
+    <form>
+        <input type="text" id="username"><br/>
+        <input type="password" id="password"><br/>
+        <button type="button" onclick="login()">로그인</button>
+    </form>
+
+    <script>
+        // async: await 지점을 기억한 채로 login함수의 스택을 빠져나온다.
+        async function login() {
+            let userDto = {
+                username:document.querySelector("#username").value,
+                password:document.querySelector("#password").value
+            }
+            console.log(userDto);
+
+            let userJson = JSON.stringify(userDto);
+            console.log(userJson)
+
+            // 통신(시간 소요)
+            let r1 = await fetch("http://localhost:8081/api/login", {
+                method:"post",
+                body: userJson,
+                headers:{
+                    "Content-Type":"application/json; charset=utf-8"
+                }
+            });
+            console.log("Authorization", r1.headers.get("Authorization"));
+
+            let token = r1.headers.get("Authorization");
+            localStorage.setItem("token", token);
+            sessionStorage.setItem("token", token);
+
+            let r2 = await r1.json();
+            console.log(r2);
+        }
+        // async로 인해 await를 기억하고 함수를 빠져나옴.
+        // 이 상태로 진행되면 함수에 필요한 데이터(ex userDto, userJson 등)이 사라짐.
+        // login 함수 내부에 있는 데이터들을 메모리에 복사해놔야 함.(캡쳐링)
+        // 이후 통신이 끝나면 스레드가 할 일이 없을 때 await로 돌아와서 r1값을 받음.
+
+    </script>
+</body>
+</html>

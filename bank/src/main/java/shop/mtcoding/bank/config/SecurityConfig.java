@@ -85,8 +85,8 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*"); // get, post, put, delete (javascript 요청 허용)
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트엔트 IP만 허용 react)
-        configuration.setAllowCredentials(true); // 클라이언트 쿠키 요청 허용
-
+        configuration.setAllowCredentials(true); // 클라이언트 쿠키 요청 허용.
+        configuration.addExposedHeader("Authorization"); // 예전에는 디폴트였음.
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
