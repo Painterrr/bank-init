@@ -75,7 +75,7 @@ public class AccountService {
         System.out.println("테스트 : 이하 계좌 정보");
         System.out.println("테스트 : id: " + accountPS.getId());
         System.out.println("테스트 : number: " + accountPS.getNumber());
-        System.out.println("테스트 : user: " + accountPS.getUser());
+        System.out.println("테스트 : userId: " + accountPS.getUser().getId());
         
         // 계좌 소유자 일치 확인
         accountPS.checkOwner(userId);
