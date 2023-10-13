@@ -44,7 +44,7 @@ public class JwtProcessTest {
         System.out.println("테스트 : " + loginUser.getUser().getRole().name());
 
         // then
-        assertThat(loginUser.getUser().getId()).isEqualTo(1L);
+        assertThat(loginUser.getUser()).isEqualTo(1L);
         assertThat(loginUser.getUser().getRole()).isEqualTo(UserEnum.ADMIN);
     }
 }
