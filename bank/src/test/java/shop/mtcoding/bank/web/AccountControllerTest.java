@@ -31,6 +31,7 @@ import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
@@ -81,7 +82,9 @@ public class AccountControllerTest extends DummyObject {
 
         // when
         ResultActions resultActions = mvc
-                .perform(post("/api/s/account").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+                .perform(post("/api/s/account")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -126,7 +129,7 @@ public class AccountControllerTest extends DummyObject {
         // then
         // Junit 테스트에서 delete 쿼리 로그는 DB관련(DML)으로 가장 마지막에 실행되면 발동안됨.
         assertThrows(CustomApiException.class, () -> accountRepository.findByNumber(number).orElseThrow(
-                                () -> new CustomApiException("계좌를 찾을 수 없습니다")));
+            () -> new CustomApiException("계좌를 찾을 수 없습니다")));
         
     }
 
@@ -144,7 +147,9 @@ public class AccountControllerTest extends DummyObject {
     
         // when
         ResultActions resultActions = mvc
-                .perform(post("/api/account/deposit").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+                .perform(post("/api/account/deposit")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -154,7 +159,7 @@ public class AccountControllerTest extends DummyObject {
 
     @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void withdraw_test() throws Exception {
+    public void withdrawAccount_test() throws Exception {
         // given
         AccountWithdrawReqDto accountWithdrawReqDto = new AccountWithdrawReqDto();
         accountWithdrawReqDto.setNumber(1111L);
@@ -167,11 +172,39 @@ public class AccountControllerTest extends DummyObject {
     
         // when
         ResultActions resultActions = mvc
-                .perform(post("/api/s/account/withdraw").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+                .perform(post("/api/s/account/withdraw")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
     
         // then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void transferAccount_test() throws Exception {
+        // given
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
         
+        String requestBody = om.writeValueAsString(accountTransferReqDto);
+        System.out.println("테스트 : " + requestBody);
+    
+        // when
+        ResultActions resultActions = mvc
+                .perform(post("/api/s/account/transfer")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+    
+        // then
+        resultActions.andExpect(status().isCreated());
     }
 }
